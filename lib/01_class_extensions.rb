@@ -18,6 +18,15 @@
 
 class String
   def caesar(shift)
+    chars.map do |ch|
+      ascii = ch.ord + shift
+      if ascii > "z".ord
+        ascii = "a".ord + (ascii - "z".ord) - 1
+      elsif ascii < "a".ord
+        ascii = "z".ord - ("a".ord - ascii) + 1
+      end
+      ascii.chr
+    end.join
   end
 end
 
@@ -36,6 +45,10 @@ end
 
 class Hash
   def difference(other_hash)
+    diff_hash = {}
+    each { |k, v| diff_hash[k] = v unless other_hash.include?(k) }
+    other_hash.each { |k, v| diff_hash[k] = v unless self.include?(k) }
+    diff_hash
   end
 end
 
@@ -98,6 +111,17 @@ end
 
 class Fixnum
   def stringify(base)
+    hexa_hash = { 10 => "a", 11 => "b", 12 => "c", 13 => "d", 14 => "e", 15 => "f" }
+    stringify_arr = []
+    return self.to_s if base == 10
+    divisor = 1
+    until divisor >= self
+      value = (self / divisor) % base
+      value = hexa_hash[value] if value > 9 && base == 16
+      stringify_arr.unshift(value)
+      divisor *= base
+    end
+    stringify_arr.join
   end
 end
 
